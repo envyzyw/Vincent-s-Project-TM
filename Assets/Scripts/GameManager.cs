@@ -25,6 +25,7 @@ public class GameManager : NetworkBehaviour
         {
             NetworkManager.Singleton.OnClientConnectedCallback += NewPlayerConnected;
         }
+        playerList = new List<ImprovisedPlayerScript>();
 
         base.OnNetworkSpawn();
     }
@@ -39,11 +40,14 @@ public class GameManager : NetworkBehaviour
             {
                 player1 = Instantiate(playerPrefab, spawnPoint1, Quaternion.identity);
                 player1.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
+                playerList.Add(player1);
             }
             else if (noOfPlayers == 2)
             {
                 player2 = Instantiate(playerPrefab, spawnPoint2, Quaternion.identity);
-                player2.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);            }
+                player2.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
+                playerList.Add(player2);
+            }
         }
     }
 

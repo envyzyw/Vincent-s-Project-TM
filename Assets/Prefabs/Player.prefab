@@ -726,7 +726,7 @@ MonoBehaviour:
   health:
     m_InternalValue: 100
   speed:
-    m_InternalValue: 5
+    m_InternalValue: 6
   jumpHeight:
     m_InternalValue: 12
   attackPower:
@@ -1096,7 +1096,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3553252707518578070}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!1 &3620109382711754244
 GameObject:
   m_ObjectHideFlags: 0

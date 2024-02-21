@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class AI : NetworkBehaviour, Attackable
+public class EnemyAI : NetworkBehaviour, Attackable
 {
     private bool isActive;
     private Coroutine dyingCorou;
@@ -31,12 +31,13 @@ public class AI : NetworkBehaviour, Attackable
 
         animator = GetComponent<Animator>();
         isActive = true;
+        StartCoroutine(UpdateTargetsRoutine());
         //target = GameObject.FindGameObjectWithTag("Player").GetComponent<ImprovisedPlayerScript>();
     }
 
     void SearchForClosestPlayer(IList playerlist)
     {
-        float closestDistance = 923431231231329999 ^ 232121331213289;
+        float closestDistance = 999999;
 
         foreach (ImprovisedPlayerScript plr in playerlist)
         {
@@ -103,6 +104,7 @@ public class AI : NetworkBehaviour, Attackable
 
     void FixedUpdate()
     {
+        if (target == null) return;
         //This line stores the rotation toward the player.
         Vector3 rotation = Quaternion.LookRotation(target.transform.position - transform.position).eulerAngles;
         rotation.x = 0;
@@ -117,7 +119,7 @@ public class AI : NetworkBehaviour, Attackable
 
     private void OnCollisionStay(Collision other)
     {
-        if (other.gameObject.tag == "Player" && isActive)
+        if (other.gameObject.tag == "Player" && isActive && target)
         {
             Rigidbody body = other.gameObject.GetComponent<Rigidbody>();
             Vector3 liftOffset = new Vector3(0, 0.2f, 0);

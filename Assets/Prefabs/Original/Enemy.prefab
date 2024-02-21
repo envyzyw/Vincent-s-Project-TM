@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2440970549781068883}
   - component: {fileID: 6890960894937771910}
   - component: {fileID: 8619668790195518545}
+  - component: {fileID: -5790433254278874833}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -151,6 +152,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forceAmount: 100
   enemyStats: {fileID: 8619668790195518545}
+  tookDamageClip: {fileID: 0}
+  source: {fileID: 0}
+  hitMat: {fileID: 0}
+  atlas: {fileID: 0}
+  mesh: {fileID: 0}
+  goldPrefab: {fileID: 0}
 --- !u!114 &8619668790195518545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +170,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f49e5dca82950a443b2c365479fbf67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 50
-  speed: 2
-  jumpHeight: 0
-  attackPower: 10
+  player: {fileID: 0}
+  health:
+    m_InternalValue: 100
+  speed:
+    m_InternalValue: 5
+  jumpHeight:
+    m_InternalValue: 12
+  attackPower:
+    m_InternalValue: 5
+--- !u!114 &-5790433254278874833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908111840682189818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
