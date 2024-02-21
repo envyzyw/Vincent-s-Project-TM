@@ -40,12 +40,14 @@ public class GameManager : NetworkBehaviour
             {
                 player1 = Instantiate(playerPrefab, spawnPoint1, Quaternion.identity);
                 player1.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
+                player1.spawnpoint = spawnPoint1;
                 playerList.Add(player1);
             }
             else if (noOfPlayers == 2)
             {
                 player2 = Instantiate(playerPrefab, spawnPoint2, Quaternion.identity);
                 player2.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
+                player2.spawnpoint = spawnPoint2;
                 playerList.Add(player2);
             }
         }

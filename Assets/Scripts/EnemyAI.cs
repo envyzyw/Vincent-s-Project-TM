@@ -24,6 +24,8 @@ public class EnemyAI : NetworkBehaviour, Attackable
     private ImprovisedPlayerScript target;
     private Vector3 direction;
     private Vector3 impactAngle;
+    private Coroutine StunCoroutine;
+    private bool isStunned  = false;   
 
     public override void OnNetworkSpawn()
     {
@@ -73,12 +75,14 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
     // Update is called once per frame
     void Update()
-    {
-        if (target == null) return;
-        
+    {                
         if (!IsServer) return;
-        
-        if (isActive == false) return;
+
+        if (target == null) return;
+
+        if (!isActive || isStunned) return;
+
+        direction = new Vector3(0,0,0);
 
         if (enemyStats.GetHealth() <= 0)
         {
@@ -89,9 +93,9 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
         if (isActive)
         {
-            if (direction.normalized.x > 0 || direction.normalized.z > 0 || direction.normalized.y > 0) animator.SetBool("isWalking", true); else { animator.SetBool("isWalking", false); }
-            transform.position += (direction.normalized * enemyStats.GetSpeed() * Time.deltaTime);
             direction = target.transform.position - transform.position;
+            transform.position += (direction.normalized * enemyStats.GetSpeed() * Time.deltaTime);
+            if (direction.normalized.x > 0 || direction.normalized.z > 0 || direction.normalized.y > 0) animator.SetBool("isWalking", true); else { animator.SetBool("isWalking", false); }
         }
     }
 
@@ -119,6 +123,7 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
     private void OnCollisionStay(Collision other)
     {
+        /*
         if (other.gameObject.tag == "Player" && isActive && target)
         {
             Rigidbody body = other.gameObject.GetComponent<Rigidbody>();
@@ -128,6 +133,21 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
             body.AddRelativeForce((impactAngle + liftOffset) * forceAmount);
         }
+        */
+    }
+
+    public void Stun(float time)
+    {
+        if (StunCoroutine != null) { StopCoroutine(StunCoroutine); }
+        StartCoroutine(StunTimer(time));
+        animator.SetBool("isWalking", false);
+    }
+
+    IEnumerator StunTimer(float time)
+    {
+        isStunned = true;
+        yield return new WaitForSeconds(time);
+        isStunned = false;
     }
 
     public void Attacked(float playerForceAmount, Vector3 forceDirection, float attackPower)

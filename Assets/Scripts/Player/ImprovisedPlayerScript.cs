@@ -43,7 +43,7 @@ public class ImprovisedPlayerScript : NetworkBehaviour
     private bool isGrounded;
     private bool isDashing;
     private bool swingCooldown;
-    
+    public Vector3 spawnpoint { get; set; }
 
     //Attack
     public Attack attack;
@@ -211,7 +211,7 @@ public class ImprovisedPlayerScript : NetworkBehaviour
         
         if(playerStats.GetHealth() <= 0)
         {
-            playerCanvas.ShowGOS();
+            Respawn();
             return;
         }
 
@@ -236,6 +236,10 @@ public class ImprovisedPlayerScript : NetworkBehaviour
                 playerStats.TakeDamage(zombie.enemyStats.GetAttack());
                 playerAudio.PlayAudio("damage");
                 playerCanvas.SetHealthBar(playerStats.GetHealth());
+                zombie.Stun(0.5f);
+
+                Vector3 direction = transform.position - zombie.transform.position;
+                body.AddForce(direction.normalized*10, ForceMode.VelocityChange);
             }
         }
         if (collision.gameObject.tag == "Ground")
@@ -289,6 +293,18 @@ public class ImprovisedPlayerScript : NetworkBehaviour
     public void SetCoins(int gold)
     {
         playerStats.SetCoins(gold);
+        playerCanvas.UpdateGoldCounter(playerStats.GetCoins());
+    }
+
+    public void Respawn()
+    {
+        transform.position = spawnpoint;
+        playerStats.ResetHealth();
+
+        int coinCount = playerStats.GetCoins();
+
+        playerStats.SetCoins(coinCount / 2);
+        playerCanvas.SetHealthBar(playerStats.GetHealth());
         playerCanvas.UpdateGoldCounter(playerStats.GetCoins());
     }
 }
