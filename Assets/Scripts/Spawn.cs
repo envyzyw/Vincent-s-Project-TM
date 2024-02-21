@@ -5,10 +5,9 @@ using UnityEngine;
 
 public class Spawn : NetworkBehaviour, Attackable
 {
-    public GameObject Enemy;
-    public float spawnRate;
+    public EnemyAI enemyPrefab;
+    public float spawnRateTimer;
     public bool isConstant;
-
 
     public override void OnNetworkSpawn()
     {
@@ -17,30 +16,15 @@ public class Spawn : NetworkBehaviour, Attackable
         if (isConstant) StartCoroutine(SpawnEnemy());
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //StartCoroutine(SpawnEnemy());
 
-        
-    }
     IEnumerator SpawnEnemy()
     {
         while (true)
         {
-            if (isConstant)
-            {
-                yield return new WaitForSeconds(1 / spawnRate);
+            yield return new WaitForSeconds(spawnRateTimer);
 
-                Instantiate(Enemy, transform.position, Quaternion.identity);
-                if (Enemy.GetComponent<NetworkObject>()) Enemy.GetComponent<NetworkObject>().Spawn();
-                else Debug.Log("woww, please setup your prefabs before typing code");
-            }
-            else
-            {
-                yield return null;
-                break;
-            }
+            EnemyAI enemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+            enemy.GetComponent<NetworkObject>().Spawn();
         }
     }
 
@@ -48,8 +32,8 @@ public class Spawn : NetworkBehaviour, Attackable
     {
         if (other.gameObject.tag == "Player" && !isConstant)
         {
-            Instantiate(Enemy, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            //Instantiate(, transform.position, Quaternion.identity);
+            //Destroy(gameObject);
         }
     }
 

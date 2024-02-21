@@ -228,9 +228,9 @@ public class ImprovisedPlayerScript : NetworkBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<AI>())
+        if (collision.gameObject.GetComponent<EnemyAI>())
         {
-            AI zombie = collision.gameObject.GetComponent<AI>();
+            EnemyAI zombie = collision.gameObject.GetComponent<EnemyAI>();
             if (zombie.GetIsActive()) 
             {
                 playerStats.TakeDamage(zombie.enemyStats.GetAttack());
