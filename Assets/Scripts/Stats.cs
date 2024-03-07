@@ -11,11 +11,11 @@ public class Stats : NetworkBehaviour
     private float rspeed;
     private float rjumpHeight;
     private float rattackPower;
-    private int coins;
-    [SerializeField] private NetworkVariable<float> health = new NetworkVariable<float>(100);
-    [SerializeField] private NetworkVariable<float> speed = new NetworkVariable<float>(5);
-    [SerializeField] private NetworkVariable<float> jumpHeight = new NetworkVariable<float>(12);
-    [SerializeField] private NetworkVariable<float> attackPower = new NetworkVariable<float>(5);
+    [SerializeField] private NetworkVariable<float> health = new NetworkVariable<float>(100, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    [SerializeField] private NetworkVariable<float> speed = new NetworkVariable<float>(5, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    [SerializeField] private NetworkVariable<float> jumpHeight = new NetworkVariable<float>(12, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    [SerializeField] private NetworkVariable<float> attackPower = new NetworkVariable<float>(5, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    [SerializeField] private NetworkVariable<int> coins = new NetworkVariable<int>(9999999, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public override void OnNetworkSpawn()
     {
@@ -54,15 +54,15 @@ public class Stats : NetworkBehaviour
 
     public int GetCoins()
     {
-        return coins;
+        return coins.Value;
     }
     public void AddCoins(int gold)
     {
-        coins+=5;
+        coins.Value += gold ;
     }
     public void SetCoins(int coins)
     {
-        this.coins = coins;
+        this.coins.Value = coins;
     }
 
     public float GetHealth()

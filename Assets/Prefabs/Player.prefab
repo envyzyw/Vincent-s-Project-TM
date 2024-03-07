@@ -654,7 +654,6 @@ GameObject:
   - component: {fileID: 7667179139379096997}
   - component: {fileID: 2469819409001594892}
   - component: {fileID: 3033858378372941755}
-  - component: {fileID: 3045818422321269881}
   - component: {fileID: 571843027816323769}
   - component: {fileID: 6103044065686035886}
   m_Layer: 3
@@ -829,18 +828,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &3045818422321269881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2212068504208930570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &571843027816323769
 Animator:
   serializedVersion: 5
@@ -1550,7 +1537,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5297870847377363379
 Transform:
   m_ObjectHideFlags: 0

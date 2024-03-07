@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Scripting.APIUpdating;
@@ -45,6 +46,10 @@ public class ImprovisedPlayerScript : NetworkBehaviour
     private bool swingCooldown;
     public Vector3 spawnpoint { get; set; }
 
+    //Calculations
+    private Vector3 spawnPos;
+    private Vector3 cameraForward;
+
     //Attack
     public Attack attack;
     public WeaponController weaponController;
@@ -54,6 +59,7 @@ public class ImprovisedPlayerScript : NetworkBehaviour
         if (!IsOwner)
         {
             playercamera.enabled = false;
+            playercamera.gameObject.GetComponent<AudioListener>().enabled = false;
             gameObject.layer = LayerMask.NameToLayer("Default");
             foreach (Transform child in transform)
             {
@@ -64,14 +70,18 @@ public class ImprovisedPlayerScript : NetworkBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
         animator = GetComponent<Animator>();
         playerStats = GetComponent<Stats>();
+        body = GetComponent<Rigidbody>();
         swingCooldown = true;
+
         playerCanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<PlayerCanvas>();
         playerCanvas.SetHealthBar(playerStats.GetHealth());
-        body = GetComponent<Rigidbody>();
+        playerCanvas.UpdateGoldCounter(playerStats.GetCoins());
+
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     void CameraControl()
@@ -179,16 +189,18 @@ public class ImprovisedPlayerScript : NetworkBehaviour
         }
         else if (Input.GetMouseButtonDown(1))
         {
-            Vector3 cameraForward = playercamera.transform.forward;
-
-            Vector3 spawnPos = cameraForward*3 + transform.position;
-            playerAudio.PlayAudio("projectile");
+            cameraForward = playercamera.transform.forward;
+            spawnPos = cameraForward * 3 + transform.position;
             spawnPos.y += 0.5f;
+            playerAudio.PlayAudio("projectile");
+
             Projectile projectile = Instantiate(dodgeballPrefab, spawnPos, Quaternion.identity);
-            Rigidbody pBody = projectile.GetComponent<Rigidbody>();
-            pBody.AddForce(cameraForward * projectile.GetForce());
+            projectile.Fire(cameraForward);
+            
         }
     }
+
+
 
     IEnumerator AttackCoroutine()
     {
@@ -231,8 +243,15 @@ public class ImprovisedPlayerScript : NetworkBehaviour
         if (collision.gameObject.GetComponent<EnemyAI>())
         {
             EnemyAI zombie = collision.gameObject.GetComponent<EnemyAI>();
+            playerStats.TakeDamage(zombie.enemyStats.GetAttack());
+            Vector3 direction = transform.position - zombie.transform.position;
+            body.AddForce(direction.normalized * 10, ForceMode.VelocityChange);
+            playerAudio.PlayAudio("damage");
+            playerCanvas.SetHealthBar(playerStats.GetHealth());
+
+            /*
             if (zombie.GetIsActive()) 
-            {
+            {  
                 playerStats.TakeDamage(zombie.enemyStats.GetAttack());
                 playerAudio.PlayAudio("damage");
                 playerCanvas.SetHealthBar(playerStats.GetHealth());
@@ -241,6 +260,7 @@ public class ImprovisedPlayerScript : NetworkBehaviour
                 Vector3 direction = transform.position - zombie.transform.position;
                 body.AddForce(direction.normalized*10, ForceMode.VelocityChange);
             }
+            */
         }
         if (collision.gameObject.tag == "Ground")
         {
@@ -258,6 +278,8 @@ public class ImprovisedPlayerScript : NetworkBehaviour
 
     public void Heal(float heal)
     {
+        if (!IsOwner) return;
+
         if (playerStats.GetHealth() <= 100-heal)
         {
             playerStats.TakeDamage(heal * -1);
@@ -269,9 +291,11 @@ public class ImprovisedPlayerScript : NetworkBehaviour
         playerCanvas.SetHealthBar(playerStats.GetHealth());
     }
 
-    public void AddGold()
+    public void AddGold(int gold)
     {
-        playerStats.AddCoins(5);
+        if (!IsOwner) return;
+
+        playerStats.AddCoins(gold);
         playerCanvas.UpdateGoldCounter(playerStats.GetCoins());
     }
 

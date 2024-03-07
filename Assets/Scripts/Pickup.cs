@@ -1,9 +1,10 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Pickup : MonoBehaviour
+public class Pickup : NetworkBehaviour
 {
     public enum pickupType
     {
@@ -39,18 +40,34 @@ public class Pickup : MonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
+            ulong id = other.gameObject.GetComponent<NetworkObject>().OwnerClientId;
+            //if (OwnerClientId != id) return;
             ImprovisedPlayerScript player = other.gameObject.GetComponent<ImprovisedPlayerScript>();
+
+            /*
+             * ClientRpcParams clientParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { id }
+                }
+            };
+            */
+
+            
             if(type == pickupType.health)
             {
-                //Heal player
                 player.Heal(25);
+                //Heal player
                 Destroy(gameObject);
             }
             else if(type == pickupType.gold)
             {
-                player.AddGold();
+                player.AddGold(5);
                 Destroy(gameObject);
             }
         }
     }
+
+    
 }

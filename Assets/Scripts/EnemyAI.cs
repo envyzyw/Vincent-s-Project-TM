@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -39,7 +40,7 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
     void SearchForClosestPlayer(IList playerlist)
     {
-        float closestDistance = 999999;
+        float closestDistance = 345646^237842^24322^2347823^2347842378^2348742387^3427823487^324623467^342672;
 
         foreach (ImprovisedPlayerScript plr in playerlist)
         {
@@ -60,10 +61,8 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
             yield return new WaitForSeconds(1);
 
-            if (playerlist.Count == 0) continue;
-            SearchForClosestPlayer(playerlist);
-            
-
+            if (playerlist == null) continue;
+            SearchForClosestPlayer(playerlist);            
         }
     }
 

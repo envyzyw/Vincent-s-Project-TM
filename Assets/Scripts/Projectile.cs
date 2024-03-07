@@ -2,18 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Projectile : MonoBehaviour, Attackable
+public class Projectile : NetworkBehaviour, Attackable
 {
     public float forceAmount;
     public float throwPower;
     private MeshRenderer mesh;
     public  float attackPower;
+    private float originalAttackPower;
     public float despawnTime;
     private Rigidbody body;
     // Start is called before the first frame update
     void Start()
     {
+        originalAttackPower = attackPower;
         mesh = GetComponent<MeshRenderer>();
         body = GetComponent<Rigidbody>();
         StartCoroutine(Despawn());
@@ -28,6 +31,7 @@ public class Projectile : MonoBehaviour, Attackable
     IEnumerator Despawn()
     {
         yield return new WaitForSeconds(despawnTime);
+        GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }
 
@@ -46,10 +50,24 @@ public class Projectile : MonoBehaviour, Attackable
         }
     }
 
+    public void Fire(Vector3 direction)
+    {
+        GetComponent<Rigidbody>().AddForce(direction * throwPower);
+        ProjectileServerRpc(direction);
+        StartCoroutine(Despawn());
+    }
+
+    [ServerRpc]
+    private void ProjectileServerRpc(Vector3 cameraForward)
+    {
+        GetComponent<NetworkObject>().Spawn();
+    }
+
     public void Attacked(float forceAmount, Vector3 forceDirection, float attackPower)
     {
         StopAllCoroutines();
         StartCoroutine(Despawn());
+        attackPower += originalAttackPower;
         body.AddForce(forceDirection * forceAmount);
     }
 }

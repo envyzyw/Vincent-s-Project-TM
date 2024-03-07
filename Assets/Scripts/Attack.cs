@@ -17,7 +17,6 @@ public class Attack : MonoBehaviour
 
     public void Activate(float attackPower)
     {
-        Debug.Log("Triggered");
         this.attackPower = attackPower;
         //mesh.enabled = true;
         gameObject.SetActive(true);
@@ -36,9 +35,8 @@ public class Attack : MonoBehaviour
             Attackable attackable = other.gameObject.GetComponent<Attackable>();
 
             attackable.Attacked(forceAmount, transform.forward, attackPower);
-
             
-            Deactivate();
+            //Deactivate();
         }
     }
 
